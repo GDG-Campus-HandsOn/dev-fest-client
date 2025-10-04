@@ -143,12 +143,23 @@ function App() {
         <ul
           style={{ fontSize: '1.1rem', lineHeight: '2', paddingLeft: '20px' }}
         >
-          <li>이동 시간: {problemConstraints.travelTime}분</li>
+          <li>
+            이동 시간: {problemConstraints.travelTime}분
+            {problemConstraints.adjacentBuildings &&
+              problemConstraints.adjacentBuildings.length > 0 && (
+                <span style={{ color: '#48bb78', fontWeight: 'bold' }}>
+                  {' '}
+                  (단, {problemConstraints.adjacentBuildings.join(', ')} →
+                  중앙도서관은 5분)
+                </span>
+              )}
+          </li>
           <li>최소 근무 시간: {problemConstraints.minWorkableSession}분</li>
           <li>
             캠퍼스 운영 시간: {problemConstraints.campusHours.start} ~{' '}
             {problemConstraints.campusHours.end}
           </li>
+          <li>알바 장소: {problemConstraints.workLocation || '중앙도서관'}</li>
         </ul>
       </div>
 
@@ -159,6 +170,13 @@ function App() {
 
       <div className="content-section">
         <h2 className="section-title">✨ 알바 가능 시간</h2>
+        <p style={{ marginBottom: '15px', color: '#666', fontSize: '0.95rem' }}>
+          ⏰ <strong>미션:</strong> 가능한 알바 시간들 중{' '}
+          <span style={{ color: '#e63946', fontWeight: 'bold' }}>
+            최대로 일할 수 있는 시간
+          </span>
+          을 골라야 합니다!
+        </p>
         {workableSlots.length === 0 ? (
           <p style={{ textAlign: 'center', color: '#999', fontSize: '1.1rem' }}>
             아직 계산되지 않았습니다. src/utils/timeProcessor.js 파일의 함수를
