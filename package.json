@@ -1,0 +1,24 @@
+{
+  "name": "gdg-devfest-react-mission",
+  "version": "1.0.0",
+  "description": "GDG DevFest 핸즈온 세션: 꿀알바 타임 찾기",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write \"src/**/*.{js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,jsx,json,css,md}\""
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "prettier": "^3.1.0"
+  }
+}
