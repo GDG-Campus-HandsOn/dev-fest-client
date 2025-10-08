@@ -5,27 +5,31 @@ AI를 활용하여 대학생의 시간표를 분석하고, 알바 가능한 시�
 
 ## 📋 프로젝트 개요
 
-이 프로젝트는 **Gemini CLI를 활용한 프롬프트 엔지니어링**을 학습하는 핸즈온 세션입니다.  
-참가자들은 단순한 프롬프트와 고급 프롬프트의 차이를 경험하며, AI를 효과적으로 활용하는 방법을 배웁니다.
+이 프로젝트는 **SDD(Specification-Driven Development)와 고급 프롬프팅 전략**을 학습하는 핸즈온 세션입니다.  
+참가자들은 명확한 명세서 작성의 중요성과 Gemini의 고도화된 프롬프팅 기법을 경험하며, Google AI를 효과적으로 활용하는 방법을 배웁니다.
 
 ### 미션 목표
 
-강의 시간표와 제약 조건을 분석하여 **교내 알바가 가능한 시간대**를 찾는 로직을 완성하세요!
+강의 시간표와 복잡한 제약 조건을 분석하여 **교내 알바가 가능한 시간대**를 찾는 로직을 완성하세요!
 
-⏰ **중요**: 가능한 알바 시간들 중 **최대로 일할 수 있는 시간**을 골라야 합니다!
+⏰ **까다로운 조건**:
+
+- 가능한 알바 시간들 중 **최대로 일할 수 있는 시간**을 골라야 합니다
+- 건물 위치에 따른 **이동 시간 차등 적용** (인접 건물 5분, 일반 15분)
+- 6가지 복합 규칙을 **모두 만족**해야 합니다
 
 ## 🚀 시작하기
 
 ### 1. 의존성 설치
 
 ```bash
-npm install
+yarn install
 ```
 
 ### 2. 개발 서버 실행
 
 ```bash
-npm run dev
+yarn start
 ```
 
 브라우저에서 `http://localhost:5173`을 열어 확인하세요.
@@ -45,14 +49,14 @@ handson/
 │   ├── App.css                  # 전역 스타일
 │   └── main.jsx                 # React 진입점
 ├── prompts/
-│   ├── prompt_naive.txt         # 1단계: 단순 프롬프트
-│   └── prompt_smart.txt         # 2단계: 고급 프롬프트
+│   ├── prompt_sdd.txt           # 1단계: SDD 기반 명세서 프롬프트
+│   └── prompt_super.txt         # 2단계: Gemini 고급 프롬프팅
 ├── index.html
 ├── package.json
 └── vite.config.js
 ```
 
-## � 서버 API 연동
+## 서버 API 연동
 
 이 프로젝트는 **자동 채점 서버**와 연동되어 있습니다:
 
@@ -65,57 +69,87 @@ handson/
 - `GET /.netlify/functions/problem` - 문제 데이터 조회
 - `POST /.netlify/functions/execute-and-validate` - 코드 제출 및 채점
 
-## �🎓 핸즈온 세션 진행 방법
+## 🎓 핸즈온 세션 진행 방법
 
 ### Step 0: 프로젝트 시작하기
 
 ```bash
-npm install
-npm run dev
+yarn install
+yarn start
 ```
 
 브라우저에서 `http://localhost:5173`을 열면 서버에서 문제 데이터를 자동으로 가져옵니다.
 
-### Step 1: 문제 이해하기
+### Step 1: 문제 분석 및 명세서 작성 (SDD 접근)
 
 페이지에서 확인할 수 있는 데이터:
 
-- **내 시간표**: 서버에서 제공하는 강의 시간표
-- **제약 조건**: 이동 시간, 최소 근무 시간, 캠퍼스 운영 시간
+- **내 시간표**: 서버에서 제공하는 강의 시간표 (건물 위치 포함)
+- **제약 조건**: 이동 시간, 최소 근무 시간, 캠퍼스 운영 시간, 인접 건물 정보
 
-### Step 2: 단순 프롬프트로 시도 (Naive Approach)
+**핵심**: 단순히 코드를 생성하지 말고, 먼저 **상세한 기능 명세서**를 작성하세요!
 
-`prompts/prompt_naive.txt`의 프롬프트를 Gemini CLI에 입력해보세요:
+#### 명세서에 포함되어야 할 내용:
+
+1. **입력 데이터 구조**: schedule 배열의 각 항목 형식
+2. **출력 데이터 구조**: 반환해야 할 배열의 형식
+3. **비즈니스 규칙 6가지**: 각 규칙의 구체적인 조건
+4. **엣지 케이스**: 하루 시작/종료, 연속 강의, 인접 건물 등
+5. **우선순위**: 최대 근무 시간 선택 로직
+
+### Step 2: SDD 기반 프롬프트 작성 (Specification-Driven Development)
+
+`prompts/prompt_sdd.txt`의 프롬프트를 Gemini에 입력해보세요:
 
 ```bash
-gemini "$(cat prompts/prompt_naive.txt)"
+# Gemini CLI 사용
+gemini "$(cat prompts/prompt_sdd.txt)"
 ```
 
-생성된 코드를 `src/utils/timeProcessor.js`의 `findWorkableSlots` 함수에 붙여넣고:
+또는 [Google AI Studio](https://aistudio.google.com)에서 직접 입력할 수도 있습니다.
+
+**SDD 프롬프트의 특징**:
+
+- ✅ 명확한 입출력 인터페이스 정의
+- ✅ 모든 제약 조건을 구조화된 형태로 제시
+- ✅ 테스트 케이스 포함
+- ✅ 우선순위 명시
+
+생성된 코드를 `src/utils/timeProcessor.js`에 붙여넣고:
 
 1. 파일을 저장합니다
 2. 브라우저를 새로고침합니다
-3. 결과를 확인합니다
-4. **"제출하여 채점받기" 버튼을 클릭**하여 서버에서 자동 채점을 받습니다
+3. **"제출하여 채점받기" 버튼을 클릭**하여 서버에서 자동 채점을 받습니다
 
 **예상 결과**:
 
-- 로컬에서는 결과가 보이지만, 서버 채점에서 실패 메시지를 받습니다
-- 단순히 공강 시간만 찾고, 제약 조건은 고려하지 않은 불완전한 코드
+- 대부분의 규칙을 통과하지만, 일부 복잡한 케이스(인접 건물, 최대 근무 시간)에서 실패 가능
 
-### Step 3: 고급 프롬프트로 개선 (Smart Approach)
+### Step 3: 고도화된 프롬프팅 전략 (Gemini Advanced Prompting)
 
-`prompts/prompt_smart.txt`의 프롬프트를 Gemini CLI에 입력해보세요:
+더 까다로운 조건들을 처리하기 위해 **Gemini의 고도화된 프롬프팅 기법**을 사용하세요.
+
+`prompts/prompt_super.txt`의 프롬프트를 사용:
 
 ```bash
-gemini "$(cat prompts/prompt_smart.txt)"
+# Gemini 2.5 Pro 추천 (복잡한 로직 처리에 강점)
+gemini "$(cat prompts/prompt_super.txt)"
 ```
 
-AI가 역으로 질문하면, 페이지에 표시된 제약 조건을 참고하여 답변하세요:
+**Super Prompt의 특징**:
 
-- 이동 시간: 15분
-- 최소 근무 시간: 60분
-- 캠퍼스 운영 시간: 09:00-18:00
+- 🧠 단계적 사고 과정 요청 (Chain of Thought)
+- 🔍 엣지 케이스 명시적 나열
+- 📊 알고리즘 의사코드 먼저 작성 요청
+- 🧪 자체 검증 로직 포함 요청
+- 🎯 우선순위 최적화 전략 명시
+
+**프롬프팅 전략**:
+
+1. **역할 부여**: "당신은 시간표 최적화 전문 알고리즘 엔지니어입니다"
+2. **사고 과정 요청**: "먼저 문제를 분석하고, 단계별로 접근 방법을 설명하세요"
+3. **구체적 제약**: 모든 규칙을 명시하되, 특히 **인접 건물 로직**과 **최대 시간 선택**을 강조
+4. **검증 요청**: "생성한 코드가 6가지 규칙을 모두 만족하는지 설명하세요"
 
 생성된 개선된 코드를 적용하고:
 
@@ -126,7 +160,7 @@ AI가 역으로 질문하면, 페이지에 표시된 제약 조건을 참고하�
 **예상 결과**:
 
 - 서버에서 "🎉 미션 성공!" 메시지를 받습니다
-- 이동 시간, 최소 근무 시간 등을 고려한 완전한 결과
+- 6가지 복합 규칙을 모두 만족하는 완전한 구현
 
 ## 🧩 완성해야 할 함수
 
@@ -176,31 +210,77 @@ export function findWorkableSlots(schedule, constraints) {
 
 ## 🎯 프롬프트 엔지니어링 학습 포인트
 
-### Naive 프롬프트의 문제점
+### 전통적 접근의 한계
 
-- 맥락(Context) 부족
-- 제약 조건 미제공
-- 단순 명령형 지시
+**문제점**:
 
-### Smart 프롬프트의 장점
+- 모호한 요구사항 전달
+- 제약 조건의 우선순위 불명확
+- 복잡한 비즈니스 로직 누락
+- 엣지 케이스 고려 부족
 
-- 역할 부여 (Role Assignment)
-- 대화형 접근 (Interactive)
-- 명확한 제약 조건 제시
-- 단계적 사고 유도
+### SDD(Specification-Driven Development) 접근
+
+**장점**:
+
+- 📋 명확한 입출력 인터페이스 정의
+- 📐 구조화된 제약 조건 명세
+- 🧪 테스트 케이스 기반 개발
+- 🎯 우선순위 명시
+
+**핵심 원칙**:
+
+1. 코드 작성 전 상세 명세서 작성
+2. 모든 비즈니스 규칙을 문서화
+3. 성공/실패 기준 명확히 정의
+
+### 고도화된 프롬프팅 전략 (Gemini Advanced Prompting)
+
+**Gemini에 적용 가능한 고급 기법**:
+
+- 🧠 **Chain of Thought**: 단계별 사고 과정 요청 (Gemini의 강점)
+- 🔄 **Self-Verification**: AI가 스스로 검증하도록 요청
+- 📊 **Algorithm First**: 의사코드 먼저, 구현은 나중에
+- 🎭 **Role-Playing**: 전문가 역할 부여
+- 🔍 **Edge Case Enumeration**: 모든 예외 케이스 명시
+- 🎯 **Few-Shot Learning**: Gemini는 예시 기반 학습에 뛰어남
+
+**실전 팁**:
+
+```
+❌ "알바 가능 시간을 찾는 함수를 만들어줘"
+✅ "시간표 최적화 전문가로서, 6가지 복합 규칙을 만족하는 알고리즘을 설계하세요.
+    먼저 문제를 분석하고, 각 규칙을 어떻게 처리할지 설명한 후,
+    의사코드를 작성하고, 최종적으로 JavaScript 코드를 구현하세요."
+```
 
 ## 📚 학습 자료
 
 ### Gemini CLI 설치
 
 ```bash
-# 설치 방법은 GDG DevFest 세션 자료를 참고하세요
+# Node.js 환경
+npm install -g @google/generative-ai-cli
+
+# 또는 npx로 직접 사용
+npx @google/generative-ai-cli
+```
+
+### Gemini API 키 설정
+
+1. [Google AI Studio](https://aistudio.google.com/app/apikey)에서 API 키 발급
+2. 환경 변수 설정:
+
+```bash
+export GOOGLE_API_KEY="your-api-key-here"
 ```
 
 ### 추가 학습 리소스
 
-- [Google AI Studio](https://makersuite.google.com/)
-- [프롬프트 엔지니어링 가이드](https://developers.google.com/machine-learning/resources/prompt-eng)
+- [Google AI Studio](https://aistudio.google.com/)
+- [Gemini API 문서](https://ai.google.dev/docs)
+- [프롬프트 엔지니어링 가이드](https://ai.google.dev/docs/prompt_best_practices)
+- [Gemini 모델 가이드](https://ai.google.dev/models/gemini)
 
 ## 🤝 기여하기
 
@@ -263,6 +343,7 @@ console.log(workableSlots);
 
 ---
 
-**만든 사람**: GDG DevFest Team  
-**세션명**: AI를 활용한 스마트 코딩 - 꿀알바 타임 찾기  
-**서버**: https://dev-fest-server.onrender.com
+**만든 사람**: [whddltjdwhd](https://github.com/whddltjdwhd)  
+**세션명**: Google Gemini로 복잡한 로직 구현하기 - 꿀알바 타임 찾기  
+**서버**: https://dev-fest-server.onrender.com  
+**Google AI**: [Google AI Studio](https://aistudio.google.com) | [Gemini API](https://ai.google.dev/)

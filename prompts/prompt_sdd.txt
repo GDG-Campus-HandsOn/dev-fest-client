@@ -1,0 +1,116 @@
+# SDD 기반 프롬프트 (Specification-Driven Development)
+
+당신은 시간표 최적화 알고리즘을 구현하는 JavaScript 개발자입니다.
+아래의 상세한 명세서를 바탕으로 함수를 구현해주세요.
+
+> 이 프롬프트는 Gemini, ChatGPT 등 모든 LLM에서 사용 가능하며, 특히 Google Gemini에 최적화되어 있습니다.
+
+## 함수 시그니처
+```javascript
+export function findWorkableSlots(schedule, constraints)
+```
+
+## 입력 데이터 구조
+
+### schedule (Array)
+각 항목의 형식:
+```javascript
+{
+  day: "월" | "화" | "수" | "목" | "금",
+  name: string,           // 강의명
+  start: "HH:MM",         // 시작 시간 (예: "09:00")
+  end: "HH:MM",           // 종료 시간 (예: "10:30")
+  location: string        // 건물명 (예: "정보관", "공대", "중앙도서관")
+}
+```
+
+### constraints (Object)
+```javascript
+{
+  travelTime: number,                // 일반 이동 시간 (분, 예: 15)
+  minWorkableSession: number,        // 최소 근무 시간 (분, 예: 60)
+  campusHours: {
+    start: "HH:MM",                  // 캠퍼스 시작 시간 (예: "09:00")
+    end: "HH:MM"                     // 캠퍼스 종료 시간 (예: "18:00")
+  },
+  workLocation: string,              // 알바 장소 (예: "중앙도서관")
+  adjacentBuildings: string[]        // 인접 건물 목록 (예: ["정보관", "학생회관"])
+}
+```
+
+## 출력 데이터 구조
+```javascript
+[
+  {
+    day: "월",
+    start: "10:30",
+    end: "12:45"
+  },
+  ...
+]
+```
+
+## 비즈니스 규칙 (우선순위 순)
+
+### Rule #1: 강의 시간 중첩 금지
+- 반환된 알바 시간이 어떤 강의 시간과도 겹치면 안 됨
+
+### Rule #2: 이동 시간 준수
+- 강의 종료 후 알바 시작까지: `travelTime` 분 이상 필요
+- 알바 종료 후 다음 강의까지: `travelTime` 분 이상 필요
+- **단, 강의가 끝나는 건물이 `adjacentBuildings`에 포함되면 5분으로 단축**
+
+### Rule #3: 최소 근무 시간
+- 각 알바 시간대는 최소 `minWorkableSession` 분 이상이어야 함
+
+### Rule #4: 캠퍼스 활동 시간
+- 알바 시간은 `campusHours.start` ~ `campusHours.end` 범위 내에만 가능
+
+### Rule #5: 완전성
+- 가능한 모든 알바 시간대를 빠짐없이 찾아야 함
+
+### Rule #6: 최대 근무 시간 선택
+- 같은 요일에 여러 가능한 시간대가 있다면, **가장 긴 시간대를 선택**
+- 예: 월요일에 60분, 90분, 120분 가능 → 120분 선택
+
+## 엣지 케이스
+
+1. **하루 시작**: 캠퍼스 시작 시간부터 첫 강의 전까지
+2. **하루 종료**: 마지막 강의 후부터 캠퍼스 종료 시간까지
+3. **연속 강의**: 강의 사이 공강이 `minWorkableSession`보다 짧으면 제외
+4. **인접 건물**: 
+   - 정보관(12:00 종료) → 중앙도서관 알바: 12:05 시작 가능
+   - 공대(12:00 종료) → 중앙도서관 알바: 12:15 시작 가능
+
+## 구현 요구사항
+
+1. 요일별로 독립적으로 계산
+2. 시간 계산은 분 단위로 변환하여 처리 권장
+3. 모든 규칙을 만족하는 시간대만 반환
+4. 반환 배열은 요일 순서대로 정렬
+
+## 테스트 케이스 예시
+
+입력:
+```javascript
+schedule = [
+  { day: "월", name: "알고리즘", start: "09:00", end: "10:30", location: "정보관" },
+  { day: "월", name: "데이터베이스", start: "13:00", end: "15:00", location: "공대" }
+]
+constraints = {
+  travelTime: 15,
+  minWorkableSession: 60,
+  campusHours: { start: "09:00", end: "18:00" },
+  workLocation: "중앙도서관",
+  adjacentBuildings: ["정보관"]
+}
+```
+
+예상 출력:
+```javascript
+[
+  { day: "월", start: "10:35", end: "12:45" }  // 정보관 → 5분 이동, 공대 → 15분 이동
+]
+```
+
+위 명세를 정확히 만족하는 JavaScript 함수를 구현해주세요.
