@@ -6,7 +6,7 @@ export const timeToMinutes = (timeStr) => {
 export const generateTimeSlots = () => {
   const slots = [];
   for (let hour = 9; hour < 18; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) {
+    for (let minute = 0; minute < 60; minute += 5) {
       slots.push({
         hour,
         minute,

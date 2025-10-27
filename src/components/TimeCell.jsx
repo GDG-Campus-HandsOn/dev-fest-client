@@ -3,7 +3,16 @@ import React from 'react';
 const TimeCell = ({ timeSlot }) => {
   const isFullHour = timeSlot.minute === 0;
   const isHalfHour = timeSlot.minute === 30;
-  const type = isFullHour ? 'full-hour' : isHalfHour ? 'half-hour' : 'quarter';
+  const isQuarterStart = timeSlot.minute === 15 || timeSlot.minute === 45;
+
+  let type = 'quarter'; // 기본: 5분 단위 작은 셀
+  if (isFullHour) {
+    type = 'full-hour'; // 정각: 큰 셀
+  } else if (isHalfHour) {
+    type = 'half-hour'; // 30분: 중간 셀
+  } else if (isQuarterStart) {
+    type = 'quarter-start'; // 15분, 45분: 중간 셀
+  }
 
   const renderLabel = () => {
     if (isFullHour) {
@@ -12,8 +21,18 @@ const TimeCell = ({ timeSlot }) => {
     if (isHalfHour) {
       return <span className="time-label-half">:30</span>;
     }
+    if (isQuarterStart) {
+      return (
+        <span className="time-label-quarter">
+          :{timeSlot.minute.toString().padStart(2, '0')}
+        </span>
+      );
+    }
     return (
-      <span className="time-label-quarter">
+      <span
+        className="time-label-quarter"
+        style={{ fontSize: '0.6rem', opacity: 0.5 }}
+      >
         :{timeSlot.minute.toString().padStart(2, '0')}
       </span>
     );

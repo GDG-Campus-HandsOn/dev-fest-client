@@ -31,32 +31,47 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  padding: 4px;
-  font-size: 0.7rem;
+  height: 20px; /* 기본 높이를 작게 */
+  padding: 2px;
+  font-size: 0.65rem;
   font-weight: 500;
   text-align: center;
   border-right: 2px solid #d0d0d0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* 정각 (00분) */
+/* 정각 (00분) - 큰 행 */
 .timetable-time-cell.full-hour {
+  height: 35px; /* 더 크게 */
   background: #e8eaf6;
   border-bottom: 2px solid #c5cae9;
   font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* 15분, 30분, 45분 - 중간 경계 */
+.timetable-time-cell.quarter-start {
+  height: 25px; /* 15분 단위 시작은 조금 크게 */
+  background: #f5f5f7;
+  border-bottom: 1px solid #d5d7e0;
+  font-weight: 600;
+  font-size: 0.7rem;
 }
 
 /* 30분 */
 .timetable-time-cell.half-hour {
+  height: 25px;
   background: #f3f4f9;
   border-bottom: 1px solid #d5d7e0;
+  font-weight: 600;
+  font-size: 0.7rem;
 }
 
-/* 15분, 45분 */
+/* 5분, 10분, 20분, 25분, 35분, 40분, 50분, 55분 - 작은 행 */
 .timetable-time-cell.quarter {
+  height: 18px; /* 작게 */
   background: #fafafa;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #d0d0d0;
 }
 
 /* 시간 라벨 */
@@ -84,11 +99,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
-  padding: 4px;
+  height: 20px; /* 기본 높이를 작게 */
+  padding: 2px;
   background: white;
   border-right: 1px solid #c3c3c3;
-  border-bottom: 1px solid #c3c3c3;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.65rem;
+}
+
+/* 정각 (00분)에 해당하는 셀 */
+.timetable-cell.full-hour {
+  height: 35px;
+  border-bottom: 2px solid #c3c3c3;
+}
+
+/* 15분, 30분, 45분에 해당하는 셀 */
+.timetable-cell.quarter-start,
+.timetable-cell.half-hour {
+  height: 25px;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+/* 5분, 10분, 20분, 25분 등 작은 셀 */
+.timetable-cell.quarter {
+  height: 18px;
+  border-bottom: 1px solid #d0d0d0;
 }
 
 /* 강의만 있을 때 */

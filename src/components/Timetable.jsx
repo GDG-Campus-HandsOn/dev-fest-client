@@ -31,6 +31,7 @@ const Timetable = ({ schedule, workableSlots }) => {
         slots={slots}
         classStarts={classStarts}
         slotStarts={slotStarts}
+        timeSlot={timeSlot}
       />
     );
   };
