@@ -70,36 +70,17 @@ function App() {
         }
       );
 
-      // 응답 처리
+      // 응답 처리 - API 응답을 그대로 사용
       const result = response.data;
-
-      setApiResult({
-        success: result.status === 'success',
-        message: result.message || result.title,
-        details: {
-          score: result.score,
-          failedRule: result.failedRule,
-          hint: result.hint,
-        },
-      });
+      setApiResult(result);
     } catch (error) {
       console.error('제출 오류:', error);
 
       let errorMessage = '서버 오류가 발생했습니다.';
 
       if (error.response) {
-        // 서버가 응답했지만 에러 상태
-        const errorData = error.response.data;
-        errorMessage = errorData.message || errorData.title || errorMessage;
-
-        setApiResult({
-          success: false,
-          message: errorMessage,
-          details: {
-            failedRule: errorData.failedRule,
-            hint: errorData.hint,
-          },
-        });
+        // 서버가 응답했지만 에러 상태 - API 응답 그대로 사용
+        setApiResult(error.response.data);
       } else if (error.request) {
         // 요청은 보냈지만 응답이 없음
         errorMessage = '서버에 연결할 수 없습니다. 네트워크를 확인해주세요.';
