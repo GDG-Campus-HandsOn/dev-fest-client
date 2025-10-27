@@ -1,6 +1,7 @@
 // 핸즈온 세션에서 사용할 데이터
 // 서버 API 설정
-export const API_BASE_URL = 'https://dev-fest-server.onrender.com';
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'https://dev-fest-server.onrender.com';
 
 // 기본 로컬 데이터 (서버 연결 실패 시 대체용)
 export const mySchedule = [
